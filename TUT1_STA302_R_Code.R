@@ -14,7 +14,7 @@ set.seed(109) # seed set
 simulated_data <- 
   tibble(
     riding_number = seq(1, 338),
-    party = sample(c("Liberal", "Conservative", "Bloc Qu¨¦b¨¦cois", "New Democratic", "Green", "Other"), size = 338, replace = TRUE)
+    party = sample(c("Liberal", "Conservative", "Bloc QuÂ¨Â¦bÂ¨Â¦cois", "New Democratic", "Green", "Other"), size = 338, replace = TRUE)
   )
 
 # Download data
@@ -36,7 +36,7 @@ cleaned_elections_data <- cleaned_elections_data %>%
   select(-Other)
 
 # Recode party names from French to English
-cleaned_elections_data$party <- recode(cleaned_elections_data$party, "Lib¨¦ral" = "Liberal", "Conservateur" = "Conservative", "Bloc Qu¨¦b¨¦cois" = "Bloc Qu¨¦b¨¦cois", "Nouveau Parti d¨¦mocratique" = "New Democratic", "Parti vert" = "Green")
+cleaned_elections_data$party <- recode(cleaned_elections_data$party, "LibÂ¨Â¦ral" = "Liberal", "Conservateur" = "Conservative", "Bloc QuÂ¨Â¦bÂ¨Â¦cois" = "Bloc QuÂ¨Â¦bÂ¨Â¦cois", "Nouveau Parti dÂ¨Â¦mocratique" = "New Democratic", "Parti vert" = "Green")
 
 # Plot the graph by colorful bar
 party_counts <- cleaned_elections_data %>%
