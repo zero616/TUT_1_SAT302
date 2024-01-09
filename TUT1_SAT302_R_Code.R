@@ -1,0 +1,52 @@
+#### Preamble ####
+# Purpose: provide an opportunity to do a small self-contained project:redo the Australian Elections worked example, but for Canada.
+# Author:  Shipeng Zhang
+# Email: shipeng.zhang@mail.utoronto.ca
+# Date: 9 January 2024
+# libraries
+install.packages("tidyverse")
+install.packages("janitor")
+library(tidyverse)
+library(janitor)
+
+# Simulate data
+set.seed(109) # seed set
+simulated_data <- 
+  tibble(
+    riding_number = seq(1, 338),
+    party = sample(c("Liberal", "Conservative", "Bloc Qu¨¦b¨¦cois", "New Democratic", "Green", "Other"), size = 338, replace = TRUE)
+  )
+
+# Download data
+elections_data <- read_csv("table_tableau11.csv") 
+
+# Clean names and select relevant columns
+cleaned_elections_data <- elections_data %>%
+  clean_names() %>%
+  select(electoral_district_name_nom_de_circonscription, elected_candidate_candidat_elu) %>%
+  rename(riding = electoral_district_name_nom_de_circonscription, elected_candidate = elected_candidate_candidat_elu)
+
+# Separate and select party information
+cleaned_elections_data <- cleaned_elections_data %>%
+  separate(
+    col = elected_candidate,
+    into = c("Other", "party"),
+    sep = "/"
+  ) %>%
+  select(-Other)
+
+# Recode party names from French to English
+cleaned_elections_data$party <- recode(cleaned_elections_data$party, "Lib¨¦ral" = "Liberal", "Conservateur" = "Conservative", "Bloc Qu¨¦b¨¦cois" = "Bloc Qu¨¦b¨¦cois", "Nouveau Parti d¨¦mocratique" = "New Democratic", "Parti vert" = "Green")
+
+# Plot the graph by colorful bar
+party_counts <- cleaned_elections_data %>%
+  count(party, sort = TRUE)
+
+ggplot(party_counts, aes(x = reorder(party, -n), y = n, fill = party)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Ridings Won by Each Party (2021 Canadian Federal Election)",
+       x = "Party",
+       y = "Number of Ridings") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
